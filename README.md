@@ -2,11 +2,15 @@
  
 A set of Roslyn analyzers & source generators for Fish-Networking (https://github.com/FirstGearGames/FishNet).
 
-## Requirements
+## Analyzers' Requirements
 
 - Unity 2020 or later
 
-## Installing the analyzers
+## Source Generators' Requirements
+
+- Unity 2021 or later
+
+## Installing The Analyzers
 
 - Download the latest release
 - Extract the downloaded archive
@@ -19,7 +23,7 @@ A set of Roslyn analyzers & source generators for Fish-Networking (https://githu
  <img src="https://user-images.githubusercontent.com/37028872/165657976-e4451df8-6d75-46ec-b6c1-9a12fbc71a5a.gif" alt="getting-started"/>
 </div>
 
-## Installing the source generators
+## Installing The Source Generators
 
 - TBA
 
