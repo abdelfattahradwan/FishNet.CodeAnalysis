@@ -11,7 +11,7 @@ namespace FishNet.Analyzers
 	{
 		private const string DiagnosticId1 = "FN0003";
 		private const string Title1 = "NetworkBehaviour callback missing base method call.";
-		private const string MessageFormat1 = "NetworkBehaviour callback missing base method call.";
+		private const string MessageFormat1 = "base.{0} call is missing.";
 		private const string Category1 = "Usage";
 
 		private static readonly DiagnosticDescriptor Descriptor1 = new(DiagnosticId1, Title1, MessageFormat1, Category1, DiagnosticSeverity.Error, true, customTags: new string[]
@@ -20,8 +20,8 @@ namespace FishNet.Analyzers
 		});
 
 		private const string DiagnosticId2 = "FN0004";
-		private const string Title2 = "Base callback method call must be the first statement.";
-		private const string MessageFormat2 = "base.{0}() must be the first statement.";
+		private const string Title2 = "Base method call must be the first statement.";
+		private const string MessageFormat2 = "base.{0} call must be the first statement.";
 		private const string Category2 = "Usage";
 
 		private static readonly DiagnosticDescriptor Descriptor2 = new(DiagnosticId2, Title2, MessageFormat2, Category2, DiagnosticSeverity.Error, true, customTags: new string[]
@@ -64,12 +64,11 @@ namespace FishNet.Analyzers
 
 			foreach (BaseTypeSyntax baseType in @class.BaseList.Types)
 			{
-				if (Helpers.IsSubtypeOf(analysisContext.SemanticModel.GetTypeSymbol(baseType.Type), FullyQualifiedNetworkBehaviourTypeName))
-				{
-					isNetworkBehaviour = true;
+				if (!Helpers.IsSubtypeOf(analysisContext.SemanticModel.GetTypeSymbol(baseType.Type), FullyQualifiedNetworkBehaviourTypeName)) continue;
 
-					break;
-				}
+				isNetworkBehaviour = true;
+
+				break;
 			}
 
 			if (!isNetworkBehaviour) return;
@@ -80,20 +79,29 @@ namespace FishNet.Analyzers
 
 			IMethodSymbol baseMethodSymbol = methodSymbol.OverriddenMethod;
 
-			if (method.Body.Statements.Count < 1)
-			{
-				analysisContext.ReportDiagnostic(Diagnostic.Create(Descriptor1, Location.Create(analysisContext.Node.SyntaxTree, method.Identifier.Span)));
+			bool isBaseCalled = false;
 
-				return;
+			for (int i = 0; i < method.Body.Statements.Count; i++)
+			{
+				if (method.Body.Statements[i] is not ExpressionStatementSyntax statement) continue;
+
+				if (statement.Expression is not InvocationExpressionSyntax invocation) continue;
+
+				if (analysisContext.SemanticModel.GetSymbol(invocation) is not IMethodSymbol invocationSymbol) continue;
+
+				if (invocationSymbol.OriginalDefinition != baseMethodSymbol) continue;
+
+				isBaseCalled = true;
+
+				if (i > 0)
+				{
+					analysisContext.ReportDiagnostic(Diagnostic.Create(Descriptor2, Location.Create(invocation.SyntaxTree, invocation.Span), baseMethodSymbol.Name));
+
+					return;
+				}
 			}
 
-			if (method.Body.Statements[0] is not ExpressionStatementSyntax statement
-				|| statement.Expression is not InvocationExpressionSyntax invocation
-				|| analysisContext.SemanticModel.GetSymbol(invocation) is not IMethodSymbol invocationSymbol
-				|| invocationSymbol.OriginalDefinition != baseMethodSymbol)
-			{
-				analysisContext.ReportDiagnostic(Diagnostic.Create(Descriptor2, Location.Create(analysisContext.Node.SyntaxTree, method.Identifier.Span), baseMethodSymbol.Name));
-			}
+			if (!isBaseCalled) analysisContext.ReportDiagnostic(Diagnostic.Create(Descriptor1, Location.Create(method.SyntaxTree, method.Identifier.Span), methodSymbol.Name));
 		}
 	}
 }
