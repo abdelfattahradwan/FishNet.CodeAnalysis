@@ -53,45 +53,31 @@ namespace FishNet.Analyzers
 
 			string fullyQualifiedMethodName = $"{method.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{method.ContainingType.Name}.{method.Name}";
 
-			if (fullyQualifiedMethodName.Equals(FullyQualifiedDontDestroyOnLoadMethodName, StringComparison.InvariantCultureIgnoreCase))
+			if (!fullyQualifiedMethodName.Equals(FullyQualifiedDontDestroyOnLoadMethodName, StringComparison.InvariantCultureIgnoreCase)) return;
+
+			ClassDeclarationSyntax @class = invocation.FirstAncestorOrSelf<ClassDeclarationSyntax>();
+
+			foreach (BaseTypeSyntax baseType in @class.BaseList.Types)
 			{
-				ClassDeclarationSyntax @class = invocation.FirstAncestorOrSelf<ClassDeclarationSyntax>();
+				if (!Helpers.IsSubtypeOf(analysisContext.SemanticModel.GetTypeSymbol(baseType.Type), FullyQualifiedNetworkBehaviourTypeName)) continue;
 
-				foreach (BaseTypeSyntax baseType in @class.BaseList.Types)
+				analysisContext.ReportDiagnostic(Diagnostic.Create(Descriptor2, Location.Create(analysisContext.Node.SyntaxTree, invocation.Span)));
+
+				return;
+			}
+
+			foreach (ArgumentSyntax argument in invocation.ArgumentList.Arguments)
+			{
+				foreach (ITypeSymbol supertype in Helpers.EnumerateTypeHierarchy(analysisContext.SemanticModel.GetTypeSymbol(argument.Expression)))
 				{
-					if (Helpers.IsSubtypeOf(analysisContext.SemanticModel.GetTypeSymbol(baseType.Type), FullyQualifiedNetworkBehaviourTypeName))
-					{
-						Diagnostic diagnostic = Diagnostic.Create(Descriptor2, Location.Create(analysisContext.Node.SyntaxTree, invocation.Span));
+					string fullyQualifiedSupertypeName = supertype.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
-						analysisContext.ReportDiagnostic(diagnostic);
+					if (!fullyQualifiedSupertypeName.Equals(FullyQualifiedNetworkObjectTypeName, StringComparison.OrdinalIgnoreCase)
+						|| !fullyQualifiedSupertypeName.Equals(FullyQualifiedNetworkBehaviourTypeName, StringComparison.OrdinalIgnoreCase)) continue;
 
-						return;
-					}
-				}
+					analysisContext.ReportDiagnostic(Diagnostic.Create(Descriptor1, Location.Create(analysisContext.Node.SyntaxTree, argument.Span), supertype.Name/*"NetworkObject"*/));
 
-				foreach (ArgumentSyntax argument in invocation.ArgumentList.Arguments)
-				{
-					foreach (ITypeSymbol supertype in Helpers.EnumerateTypeHierarchy(analysisContext.SemanticModel.GetTypeSymbol(argument.Expression)))
-					{
-						string fullyQualifiedSupertypeName = supertype.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-
-						if (fullyQualifiedSupertypeName.Equals(FullyQualifiedNetworkObjectTypeName, StringComparison.InvariantCultureIgnoreCase))
-						{
-							Diagnostic diagnostic = Diagnostic.Create(Descriptor1, Location.Create(analysisContext.Node.SyntaxTree, argument.Span), "NetworkObject");
-
-							analysisContext.ReportDiagnostic(diagnostic);
-
-							return;
-						}
-						else if (fullyQualifiedSupertypeName.Equals(FullyQualifiedNetworkBehaviourTypeName, StringComparison.InvariantCultureIgnoreCase))
-						{
-							Diagnostic diagnostic = Diagnostic.Create(Descriptor1, Location.Create(analysisContext.Node.SyntaxTree, argument.Span), "NetworkBehaviour");
-
-							analysisContext.ReportDiagnostic(diagnostic);
-
-							return;
-						}
-					}
+					return;
 				}
 			}
 		}

@@ -22,7 +22,7 @@ namespace FishNet.Analyzers
 		{
 			foreach (ITypeSymbol supertype in EnumerateTypeHierarchy(type))
 			{
-				if (supertype.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).Equals(fullyQualifiedSupertypeName, StringComparison.InvariantCultureIgnoreCase)) return true;
+				if (supertype.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).Equals(fullyQualifiedSupertypeName, StringComparison.OrdinalIgnoreCase)) return true;
 			}
 
 			return false;
