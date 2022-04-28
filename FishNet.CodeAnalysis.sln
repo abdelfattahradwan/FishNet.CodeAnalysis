@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishNet.CodeAnalysis.Analyzers", "src\FishNet.CodeAnalysis.Analyzers\FishNet.CodeAnalysis.Analyzers.csproj", "{E680A71F-5716-4D98-BDDA-470D4B9C845B}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "FishNet.CodeAnalysis.Extensions", "src\FishNet.CodeAnalysis.Extensions\FishNet.CodeAnalysis.Extensions.shproj", "{0A9323FA-D053-4374-9CF7-3D37C49A3A52}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\FishNet.CodeAnalysis.Extensions\FishNet.CodeAnalysis.Extensions.projitems*{0a9323fa-d053-4374-9cf7-3d37c49a3a52}*SharedItemsImports = 13
+		src\FishNet.CodeAnalysis.Extensions\FishNet.CodeAnalysis.Extensions.projitems*{e680a71f-5716-4d98-bdda-470d4b9c845b}*SharedItemsImports = 5
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E680A71F-5716-4D98-BDDA-470D4B9C845B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E680A71F-5716-4D98-BDDA-470D4B9C845B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E680A71F-5716-4D98-BDDA-470D4B9C845B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E680A71F-5716-4D98-BDDA-470D4B9C845B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9727867B-2C44-4632-9B74-9F297D7C6BEA}
+	EndGlobalSection
+EndGlobal
