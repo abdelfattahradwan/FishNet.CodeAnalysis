@@ -1,6 +1,6 @@
 # FishNet.CodeAnalysis
  
-A set of Roslyn analyzers & source generators for Fish-Networking (https://github.com/FirstGearGames/FishNet).
+A set of annotations, Roslyn analyzers & source generators for Fish-Networking (https://github.com/FirstGearGames/FishNet).
 
 ## Analyzers' Requirements
 
