@@ -1,28 +1,37 @@
 ﻿using Microsoft.CodeAnalysis;
-using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace FishNet.CodeAnalysis.Extensions;
 
 internal static class ITypeSymbolExtensions
 {
-	public static IEnumerable<ITypeSymbol> EnumerateTypeHierarchy(this ITypeSymbol type)
+	public static IEnumerable<ITypeSymbol> EnumerateTypeHierarchy(this ITypeSymbol thisTypeSymbol)
 	{
-		ITypeSymbol current = type;
-
-		while (current != null)
-		{
-			yield return current;
-
-			current = current.BaseType;
-		}
+		for (ITypeSymbol typeSymbol = thisTypeSymbol; typeSymbol != null; typeSymbol = typeSymbol.BaseType) yield return typeSymbol;
 	}
 
-	public static bool IsSubtypeOf(this ITypeSymbol type, string fullyQualifiedSupertypeName)
+	public static bool IsSubtypeOf(this ITypeSymbol thisTypeSymbol, string fullyQualifiedTypeName)
 	{
-		foreach (ITypeSymbol supertype in type.EnumerateTypeHierarchy())
+		foreach (ITypeSymbol typeSymbol in thisTypeSymbol.EnumerateTypeHierarchy())
 		{
-			if (supertype.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).Equals(fullyQualifiedSupertypeName, StringComparison.OrdinalIgnoreCase)) return true;
+			if (typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) == fullyQualifiedTypeName) return true;
+		}
+
+		return false;
+	}
+
+	public static bool IsSubtypeOf(this ITypeSymbol thisTypeSymbol, ImmutableHashSet<string> fullyQualifiedTypeNames, out ITypeSymbol? result)
+	{
+		result = null;
+
+		foreach (ITypeSymbol typeSymbol in thisTypeSymbol.EnumerateTypeHierarchy())
+		{
+			if (!fullyQualifiedTypeNames.Contains(typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))) continue;
+
+			result = typeSymbol;
+
+			return true;
 		}
 
 		return false;

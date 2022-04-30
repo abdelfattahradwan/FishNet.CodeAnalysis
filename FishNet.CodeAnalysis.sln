@@ -3,13 +3,22 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FishNet.CodeAnalysis.Analyzers", "src\FishNet.CodeAnalysis.Analyzers\FishNet.CodeAnalysis.Analyzers.csproj", "{E680A71F-5716-4D98-BDDA-470D4B9C845B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FishNet.CodeAnalysis.Analyzers", "src\FishNet.CodeAnalysis.Analyzers\FishNet.CodeAnalysis.Analyzers.csproj", "{E680A71F-5716-4D98-BDDA-470D4B9C845B}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "FishNet.CodeAnalysis.Extensions", "src\FishNet.CodeAnalysis.Extensions\FishNet.CodeAnalysis.Extensions.shproj", "{0A9323FA-D053-4374-9CF7-3D37C49A3A52}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FishNet.CodeAnalysis.SourceGenerators", "src\FishNet.CodeAnalysis.SourceGenerators\FishNet.CodeAnalysis.SourceGenerators.csproj", "{AA8A96A6-2456-4B0D-A5A3-A0AECC2DA6E4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FishNet.CodeAnalysis", "src\FishNet.CodeAnalysis\FishNet.CodeAnalysis.csproj", "{AA166BA6-AAC7-496A-AC46-CDEDC3D65609}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "FishNet.CodeAnalysis.Annotations", "src\FishNet.CodeAnalysis.Annotations\FishNet.CodeAnalysis.Annotations.shproj", "{1AA22033-BC7E-4DB9-9761-06DE8B753243}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		src\FishNet.CodeAnalysis.Extensions\FishNet.CodeAnalysis.Extensions.projitems*{0a9323fa-d053-4374-9cf7-3d37c49a3a52}*SharedItemsImports = 13
+		src\FishNet.CodeAnalysis.Annotations\FishNet.CodeAnalysis.Annotations.projitems*{1aa22033-bc7e-4db9-9761-06de8b753243}*SharedItemsImports = 13
+		src\FishNet.CodeAnalysis.Annotations\FishNet.CodeAnalysis.Annotations.projitems*{aa166ba6-aac7-496a-ac46-cdedc3d65609}*SharedItemsImports = 5
+		src\FishNet.CodeAnalysis.Annotations\FishNet.CodeAnalysis.Annotations.projitems*{e680a71f-5716-4d98-bdda-470d4b9c845b}*SharedItemsImports = 5
 		src\FishNet.CodeAnalysis.Extensions\FishNet.CodeAnalysis.Extensions.projitems*{e680a71f-5716-4d98-bdda-470d4b9c845b}*SharedItemsImports = 5
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +30,14 @@ Global
 		{E680A71F-5716-4D98-BDDA-470D4B9C845B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E680A71F-5716-4D98-BDDA-470D4B9C845B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E680A71F-5716-4D98-BDDA-470D4B9C845B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA8A96A6-2456-4B0D-A5A3-A0AECC2DA6E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA8A96A6-2456-4B0D-A5A3-A0AECC2DA6E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA8A96A6-2456-4B0D-A5A3-A0AECC2DA6E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA8A96A6-2456-4B0D-A5A3-A0AECC2DA6E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA166BA6-AAC7-496A-AC46-CDEDC3D65609}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA166BA6-AAC7-496A-AC46-CDEDC3D65609}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA166BA6-AAC7-496A-AC46-CDEDC3D65609}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA166BA6-AAC7-496A-AC46-CDEDC3D65609}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
