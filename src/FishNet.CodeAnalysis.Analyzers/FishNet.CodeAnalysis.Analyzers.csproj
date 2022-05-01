@@ -22,5 +22,5 @@
 	<Import Project="..\FishNet.CodeAnalysis.Extensions\FishNet.CodeAnalysis.Extensions.projitems" Label="Shared" />
 
 	<Import Project="..\FishNet.CodeAnalysis.Annotations\FishNet.CodeAnalysis.Annotations.projitems" Label="Shared" />
-
+	
 </Project>

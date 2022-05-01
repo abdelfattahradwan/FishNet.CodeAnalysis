@@ -1,0 +1,74 @@
+﻿using FishNet.CodeAnalysis.Annotations;
+using FishNet.CodeAnalysis.Extensions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+
+namespace FishNet.CodeAnalysis.Analyzers;
+
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+internal sealed class PreventUsageInsideAnalyzer : DiagnosticAnalyzer
+{
+	private const string DiagnosticId = DiagnosticIds.FN0007;
+	private const string Title = "Usage of member is not allowed here.";
+	private const string MessageFormat = "Usage of {0} is not allowed inside {1}.";
+	private const string Category = "Usage";
+
+	private static readonly DiagnosticDescriptor Descriptor = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, true, customTags: WellKnownDiagnosticTags.NotConfigurable);
+
+	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(Descriptor);
+
+	public override void Initialize(AnalysisContext context)
+	{
+		context.EnableConcurrentExecution();
+
+		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+
+		SyntaxKind[] syntaxKinds = new SyntaxKind[]
+		{
+			SyntaxKind.MethodDeclaration,
+			SyntaxKind.GetAccessorDeclaration,
+			SyntaxKind.SetAccessorDeclaration,
+			SyntaxKind.AddAccessorDeclaration,
+			SyntaxKind.RemoveAccessorDeclaration,
+		};
+
+		context.RegisterSyntaxNodeAction(Analyze, syntaxKinds);
+	}
+
+	private static void Analyze(SyntaxNodeAnalysisContext context)
+	{
+		IEnumerable<SyntaxNode> descendantSyntaxNodes = context.Node.DescendantNodes();
+
+		try
+		{
+			ISymbol syntaxNodeSymbol = context.SemanticModel.GetDeclaredSymbol(context.Node);
+
+			foreach (SyntaxNode descendantSyntaxNode in descendantSyntaxNodes)
+			{
+				if (descendantSyntaxNode is not IdentifierNameSyntax identifierNameSyntax) continue;
+
+				if (context.SemanticModel.GetSymbol(descendantSyntaxNode) is not ISymbol identifierNameSymbol) continue;
+
+				foreach (AttributeData attribute in identifierNameSymbol.GetAttributes(typeof(PreventUsageInsideAttribute).GetFullyQualifiedName()))
+				{
+					if (attribute.GetConstructorArgument<string>(0) is not string typeName || string.IsNullOrWhiteSpace(typeName)) continue;
+
+					if (!syntaxNodeSymbol.ContainingType.IsSubtypeOf(typeName)) continue;
+
+					if (attribute.GetConstructorArgument<string>(1) is not string memberName || string.IsNullOrWhiteSpace(memberName) || memberName != syntaxNodeSymbol.Name) continue;
+
+					context.ReportDiagnostic(Diagnostic.Create(Descriptor, descendantSyntaxNode.GetLocation(), identifierNameSymbol?.Name, syntaxNodeSymbol.Name));
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			context.ReportDiagnostic(Diagnostic.Create(Descriptor, context.Node.GetLocation(), $"ERROR @ {context.Node.GetText()}", e.ToString()));
+		}
+	}
+}

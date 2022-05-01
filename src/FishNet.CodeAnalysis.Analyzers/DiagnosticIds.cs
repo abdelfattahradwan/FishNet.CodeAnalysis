@@ -31,4 +31,9 @@ internal static class DiagnosticIds
 	/// Base calls are not allowed inside Remote procedure calls (ServerRpc, ObserversRpc, TargetRpc).
 	/// </summary>
 	public const string FN0006 = nameof(FN0006);
+
+	/// <summary>
+	/// Use of member not allowed here.
+	/// </summary>
+	public const string FN0007 = nameof(FN0007);	
 }

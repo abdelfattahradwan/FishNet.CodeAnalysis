@@ -46,7 +46,7 @@ internal sealed class OverrideMustCallBaseAnalyzer : DiagnosticAnalyzer
 
 		IMethodSymbol overriddenMethodSymbol = methodSymbol.OverriddenMethod;
 
-		string fullyQualifiedAttributeName = typeof(OverrideMustCallBaseAttribute).GetGlobalPrefixedFullName();
+		string fullyQualifiedAttributeName = typeof(OverrideMustCallBaseAttribute).GetFullyQualifiedName();
 
 		if (overriddenMethodSymbol.GetAttribute(fullyQualifiedAttributeName) is not AttributeData overrideMustCallBaseAttributeData) return;
 

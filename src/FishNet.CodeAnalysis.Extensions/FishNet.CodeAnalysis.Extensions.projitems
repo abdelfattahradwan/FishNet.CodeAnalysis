@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)AttributeDataExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)IMethodSymbolExtensions.cs" />
+    <Compile Include="..\FishNet.CodeAnalysis.Extensions\ISymbolExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ITypeSymbolExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SemanticModelExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TypeExtensions.cs" />
