@@ -35,5 +35,5 @@ internal static class DiagnosticIds
 	/// <summary>
 	/// Use of member not allowed here.
 	/// </summary>
-	public const string FN0007 = nameof(FN0007);	
+	public const string FN0007 = nameof(FN0007);
 }

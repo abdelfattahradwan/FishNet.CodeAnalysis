@@ -4,8 +4,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 
 namespace FishNet.CodeAnalysis.Analyzers;
@@ -42,33 +40,24 @@ internal sealed class PreventUsageInsideAnalyzer : DiagnosticAnalyzer
 
 	private static void Analyze(SyntaxNodeAnalysisContext context)
 	{
-		IEnumerable<SyntaxNode> descendantSyntaxNodes = context.Node.DescendantNodes();
+		ISymbol syntaxNodeSymbol = context.SemanticModel.GetDeclaredSymbol(context.Node);
 
-		try
+		foreach (SyntaxNode descendantSyntaxNode in context.Node.DescendantNodes())
 		{
-			ISymbol syntaxNodeSymbol = context.SemanticModel.GetDeclaredSymbol(context.Node);
+			if (descendantSyntaxNode is not IdentifierNameSyntax) continue;
 
-			foreach (SyntaxNode descendantSyntaxNode in descendantSyntaxNodes)
+			if (context.SemanticModel.GetSymbol(descendantSyntaxNode) is not ISymbol identifierNameSymbol) continue;
+
+			foreach (AttributeData attribute in identifierNameSymbol.GetAttributes(typeof(PreventUsageInsideAttribute).GetFullyQualifiedName()))
 			{
-				if (descendantSyntaxNode is not IdentifierNameSyntax identifierNameSyntax) continue;
+				if (attribute.GetConstructorArgument<string>(0) is not string typeName || string.IsNullOrWhiteSpace(typeName)) continue;
 
-				if (context.SemanticModel.GetSymbol(descendantSyntaxNode) is not ISymbol identifierNameSymbol) continue;
+				if (!syntaxNodeSymbol.ContainingType.IsSubtypeOf(typeName)) continue;
 
-				foreach (AttributeData attribute in identifierNameSymbol.GetAttributes(typeof(PreventUsageInsideAttribute).GetFullyQualifiedName()))
-				{
-					if (attribute.GetConstructorArgument<string>(0) is not string typeName || string.IsNullOrWhiteSpace(typeName)) continue;
+				if (attribute.GetConstructorArgument<string>(1) is not string memberName || string.IsNullOrWhiteSpace(memberName) || memberName != syntaxNodeSymbol.Name) continue;
 
-					if (!syntaxNodeSymbol.ContainingType.IsSubtypeOf(typeName)) continue;
-
-					if (attribute.GetConstructorArgument<string>(1) is not string memberName || string.IsNullOrWhiteSpace(memberName) || memberName != syntaxNodeSymbol.Name) continue;
-
-					context.ReportDiagnostic(Diagnostic.Create(Descriptor, descendantSyntaxNode.GetLocation(), identifierNameSymbol?.Name, syntaxNodeSymbol.Name));
-				}
+				context.ReportDiagnostic(Diagnostic.Create(Descriptor, descendantSyntaxNode.GetLocation(), identifierNameSymbol?.Name, syntaxNodeSymbol.Name));
 			}
-		}
-		catch (Exception e)
-		{
-			context.ReportDiagnostic(Diagnostic.Create(Descriptor, context.Node.GetLocation(), $"ERROR @ {context.Node.GetText()}", e.ToString()));
 		}
 	}
 }

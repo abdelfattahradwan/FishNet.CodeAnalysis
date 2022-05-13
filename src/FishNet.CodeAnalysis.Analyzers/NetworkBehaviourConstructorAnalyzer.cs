@@ -32,15 +32,13 @@ internal sealed class NetworkBehaviourConstructorAnalyzer : DiagnosticAnalyzer
 
 	private static void Analyze(SyntaxNodeAnalysisContext context)
 	{
-		ConstructorDeclarationSyntax constructorDeclarationSyntax = (ConstructorDeclarationSyntax)context.Node;
-
-		if (constructorDeclarationSyntax.FirstAncestorOrSelf<BaseTypeDeclarationSyntax>()?.BaseList is not BaseListSyntax baseListSyntax) return;
+		if (context.Node.FirstAncestorOrSelf<BaseTypeDeclarationSyntax>()?.BaseList is not BaseListSyntax baseListSyntax) return;
 
 		foreach (BaseTypeSyntax baseTypeSyntax in baseListSyntax.Types)
 		{
 			if (!context.SemanticModel.GetTypeSymbol(baseTypeSyntax.Type).IsSubtypeOf(FullyQualifiedNetworkBehaviourTypeName)) continue;
 
-			context.ReportDiagnostic(Diagnostic.Create(Descriptor1, constructorDeclarationSyntax.GetLocation()));
+			context.ReportDiagnostic(Diagnostic.Create(Descriptor1, context.Node.GetLocation()));
 
 			return;
 		}

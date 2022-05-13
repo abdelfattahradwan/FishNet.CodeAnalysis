@@ -15,12 +15,12 @@ internal sealed class DontDestroyOnLoadAnalyzer : DiagnosticAnalyzer
 	private const string MessageFormat1 = "Using DontDestroyOnLoad on a {0} isn't allowed.";
 	private const string Category1 = "Usage";
 
-	private static readonly DiagnosticDescriptor Descriptor1 = new(DiagnosticId1, Title1, MessageFormat1, Category1, DiagnosticSeverity.Error, true, customTags: WellKnownDiagnosticTags.NotConfigurable);
-
 	private const string DiagnosticId2 = DiagnosticIds.FN0002;
 	private const string Title2 = "Don't call DontDestroyOnLoad from inside NetworkBehaviour or a class deriving from it.";
 	private const string MessageFormat2 = "Don't call DontDestroyOnLoad from inside NetworkBehaviour or a class deriving from it.";
 	private const string Category2 = "Usage";
+
+	private static readonly DiagnosticDescriptor Descriptor1 = new(DiagnosticId1, Title1, MessageFormat1, Category1, DiagnosticSeverity.Error, true, customTags: WellKnownDiagnosticTags.NotConfigurable);
 
 	private static readonly DiagnosticDescriptor Descriptor2 = new(DiagnosticId2, Title2, MessageFormat2, Category2, DiagnosticSeverity.Error, true, customTags: WellKnownDiagnosticTags.NotConfigurable);
 
@@ -45,7 +45,7 @@ internal sealed class DontDestroyOnLoadAnalyzer : DiagnosticAnalyzer
 
 		if (context.SemanticModel.GetSymbolInfo(invocationExpressionSyntax).Symbol is not IMethodSymbol method) return;
 
-		string fullyQualifiedMethodName = $"{method.ContainingNamespace.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{method.ContainingType.Name}.{method.Name}";
+		string fullyQualifiedMethodName = method.GetFullyQualifiedName();
 
 		if (fullyQualifiedMethodName != FullyQualifiedDontDestroyOnLoadMethodName) return;
 

@@ -16,13 +16,13 @@ internal sealed class OverrideMustCallBaseAnalyzer : DiagnosticAnalyzer
 	private const string MessageFormat1 = "Missing base.{0} call.";
 	private const string Category1 = "Usage";
 
-	private static readonly DiagnosticDescriptor Descriptor1 = new(DiagnosticId1, Title1, MessageFormat1, Category1, DiagnosticSeverity.Error, true, customTags: WellKnownDiagnosticTags.NotConfigurable);
-
 	private const string DiagnosticId2 = DiagnosticIds.FN0004;
 	private const string Title2 = "Base call must be the first statement.";
 	private const string MessageFormat2 = "base.{0} call must be the first statement.";
 	private const string Category2 = "Usage";
 
+	private static readonly DiagnosticDescriptor Descriptor1 = new(DiagnosticId1, Title1, MessageFormat1, Category1, DiagnosticSeverity.Error, true, customTags: WellKnownDiagnosticTags.NotConfigurable);
+	
 	private static readonly DiagnosticDescriptor Descriptor2 = new(DiagnosticId2, Title2, MessageFormat2, Category2, DiagnosticSeverity.Error, true, customTags: WellKnownDiagnosticTags.NotConfigurable);
 
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(Descriptor1, Descriptor2);
