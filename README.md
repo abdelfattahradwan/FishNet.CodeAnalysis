@@ -16,10 +16,6 @@ A set of annotations, Roslyn analyzers & source generators for Fish-Networking (
 2. Extract the downloaded archive
 3. Copy the extracted files to a folder inside your `Assets` folder
 
-<div align="center">
- <img src="https://user-images.githubusercontent.com/37028872/165657976-e4451df8-6d75-46ec-b6c1-9a12fbc71a5a.gif" alt="getting-started"/>
-</div>
-
 ## Installing The Source Generators
 
 - TBA
