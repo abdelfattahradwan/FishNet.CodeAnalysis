@@ -13,7 +13,7 @@ internal sealed class PreventUsageInsideAnalyzer : DiagnosticAnalyzer
 {
 	private const string DiagnosticId = DiagnosticIds.FN0007;
 	private const string Title = "Usage of member is not allowed here.";
-	private const string MessageFormat = "Usage of {0} is not allowed inside {1}.";
+	private const string MessageFormat = "Usage of {0} is not allowed inside {1}. {2}";
 	private const string Category = "Usage";
 
 	private static readonly DiagnosticDescriptor Descriptor = new(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, true, customTags: WellKnownDiagnosticTags.NotConfigurable);
@@ -56,7 +56,7 @@ internal sealed class PreventUsageInsideAnalyzer : DiagnosticAnalyzer
 
 				if (attribute.GetConstructorArgument<string>(1) is not string memberName || string.IsNullOrWhiteSpace(memberName) || memberName != syntaxNodeSymbol.Name) continue;
 
-				context.ReportDiagnostic(Diagnostic.Create(Descriptor, descendantSyntaxNode.GetLocation(), identifierNameSymbol?.Name, syntaxNodeSymbol.Name));
+				context.ReportDiagnostic(Diagnostic.Create(Descriptor, descendantSyntaxNode.GetLocation(), identifierNameSymbol?.Name, syntaxNodeSymbol.Name, attribute.GetConstructorArgument<string>(2)));
 			}
 		}
 	}
