@@ -22,7 +22,7 @@ internal sealed class OverrideMustCallBaseAnalyzer : DiagnosticAnalyzer
 	private const string Category2 = "Usage";
 
 	private static readonly DiagnosticDescriptor Descriptor1 = new(DiagnosticId1, Title1, MessageFormat1, Category1, DiagnosticSeverity.Error, true, customTags: WellKnownDiagnosticTags.NotConfigurable);
-	
+
 	private static readonly DiagnosticDescriptor Descriptor2 = new(DiagnosticId2, Title2, MessageFormat2, Category2, DiagnosticSeverity.Error, true, customTags: WellKnownDiagnosticTags.NotConfigurable);
 
 	public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(Descriptor1, Descriptor2);
@@ -48,13 +48,13 @@ internal sealed class OverrideMustCallBaseAnalyzer : DiagnosticAnalyzer
 
 		string fullyQualifiedAttributeName = typeof(OverrideMustCallBaseAttribute).GetFullyQualifiedName();
 
-		if (overriddenMethodSymbol.GetAttribute(fullyQualifiedAttributeName) is not AttributeData overrideMustCallBaseAttributeData) return;
+		if (overriddenMethodSymbol.GetAttribute(fullyQualifiedAttributeName) is not { } overrideMustCallBaseAttributeData) return;
 
 		bool baseCallMustBeFirst = overrideMustCallBaseAttributeData.GetNamedArgument<bool>(0);
 
 		bool isBaseCalled = false;
 
-		if (methodDeclarationSyntax.Body is BlockSyntax bodyBlockSyntax)
+		if (methodDeclarationSyntax.Body is { } bodyBlockSyntax)
 		{
 			for (int i = 0; i < bodyBlockSyntax.Statements.Count; i++)
 			{
@@ -64,23 +64,22 @@ internal sealed class OverrideMustCallBaseAnalyzer : DiagnosticAnalyzer
 
 				if (context.SemanticModel.GetSymbol(invocationExpressionSyntax) is not IMethodSymbol invocationMethodSymbol) continue;
 
-				if (invocationMethodSymbol.OriginalDefinition != overriddenMethodSymbol) continue;
+				if (invocationMethodSymbol.OriginalDefinition.Equals(overriddenMethodSymbol)) continue;
 
 				isBaseCalled = true;
 
-				if (baseCallMustBeFirst && i > 0)
-				{
-					context.ReportDiagnostic(Diagnostic.Create(Descriptor2, invocationExpressionSyntax.GetLocation(), overriddenMethodSymbol.Name));
+				if (!baseCallMustBeFirst || i <= 0) continue;
 
-					return;
-				}
+				context.ReportDiagnostic(Diagnostic.Create(Descriptor2, invocationExpressionSyntax.GetLocation(), overriddenMethodSymbol.Name));
+
+				return;
 			}
 		}
-		else if (methodDeclarationSyntax.ExpressionBody is ArrowExpressionClauseSyntax expressionBodyArrowExpressionClauseSyntax)
+		else if (methodDeclarationSyntax.ExpressionBody is { } expressionBodyArrowExpressionClauseSyntax)
 		{
-			isBaseCalled = expressionBodyArrowExpressionClauseSyntax.Expression is InvocationExpressionSyntax invocationExpressionSyntax
-				&& context.SemanticModel.GetSymbol(invocationExpressionSyntax) is IMethodSymbol invocationMethodSymbol
-				&& invocationMethodSymbol.OriginalDefinition == overriddenMethodSymbol;
+			isBaseCalled = expressionBodyArrowExpressionClauseSyntax.Expression is InvocationExpressionSyntax invocationExpressionSyntax &&
+						   context.SemanticModel.GetSymbol(invocationExpressionSyntax) is IMethodSymbol invocationMethodSymbol &&
+						   invocationMethodSymbol.OriginalDefinition.Equals(overriddenMethodSymbol);
 		}
 
 		if (!isBaseCalled) context.ReportDiagnostic(Diagnostic.Create(Descriptor1, methodDeclarationSyntax.GetLocation(), methodSymbol.Name));
