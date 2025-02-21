@@ -2,17 +2,12 @@
 
 namespace FishNet.CodeAnalysis.Annotations;
 
-[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-public sealed class PreventUsageInsideAttribute : Attribute
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method, AllowMultiple = true)]
+public sealed class PreventUsageInsideAttribute(string fullyQualifiedTypeName, string memberName, string additionalInformation = "") : Attribute
 {
-	public string FullyQualifiedTypeName { get; }
-	public string MemberName { get; }
-	public string AdditionalInformation { get; }
+	public string FullyQualifiedTypeName { get; } = fullyQualifiedTypeName;
 
-	public PreventUsageInsideAttribute(string fullyQualifiedTypeName, string memberName, string additionalInformation = "")
-	{
-		FullyQualifiedTypeName = fullyQualifiedTypeName;
-		MemberName = memberName;
-		AdditionalInformation = additionalInformation;
-	}
+	public string MemberName { get; } = memberName;
+
+	public string AdditionalInformation { get; } = additionalInformation;
 }
