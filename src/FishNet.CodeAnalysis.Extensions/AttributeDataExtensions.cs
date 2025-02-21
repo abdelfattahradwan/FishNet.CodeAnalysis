@@ -14,7 +14,7 @@ internal static class AttributeDataExtensions
 
 		if (argumentIndex > -1 && argumentIndex < constructorArguments.Length) return (T)constructorArguments[argumentIndex].Value;
 
-		return default;
+		return default(T?);
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -24,7 +24,7 @@ internal static class AttributeDataExtensions
 
 		if (argumentIndex > -1 && argumentIndex < namedArguments.Length) return (T)namedArguments[argumentIndex].Value.Value;
 
-		return default;
+		return default(T?);
 	}
 
 	public static T? GetNamedArgument<T>(this AttributeData thisAttributeData, string argumentName)
@@ -34,6 +34,6 @@ internal static class AttributeDataExtensions
 			if (namedArgument.Key == argumentName) return (T)namedArgument.Value.Value;
 		}
 
-		return default;
+		return default(T?);
 	}
 }

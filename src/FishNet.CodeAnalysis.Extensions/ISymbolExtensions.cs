@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace FishNet.CodeAnalysis.Extensions;
@@ -24,22 +25,12 @@ internal static class ISymbolExtensions
 
 	public static bool HasAttribute(this ISymbol thisSymbol, params string[] fullyQualifiedAttributeNames)
 	{
-		foreach (string fullyQualifiedAttributeName in fullyQualifiedAttributeNames)
-		{
-			if (thisSymbol.HasAttribute(fullyQualifiedAttributeName)) return true;
-		}
-
-		return false;
+		return fullyQualifiedAttributeNames.Any(thisSymbol.HasAttribute);
 	}
 
 	public static bool HasAttributes(this ISymbol thisSymbol, string[] fullyQualifiedAttributeNames)
 	{
-		foreach (string fullyQualifiedAttributeName in fullyQualifiedAttributeNames)
-		{
-			if (!thisSymbol.HasAttribute(fullyQualifiedAttributeName)) return false;
-		}
-
-		return true;
+		return fullyQualifiedAttributeNames.All(thisSymbol.HasAttribute);
 	}
 
 	public static AttributeData? GetAttribute(this ISymbol thisSymbol, string fullyQualifiedAttributeName)
