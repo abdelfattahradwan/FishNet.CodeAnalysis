@@ -1,26 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
-		<AssemblyName>FishNet.CodeAnalysis.Analyzers</AssemblyName>
-		<RootNamespace>FishNet.CodeAnalysis.Analyzers</RootNamespace>
-		<DebugType>none</DebugType>
-		<LangVersion>latest</LangVersion>
-		<EnableNETAnalyzers>True</EnableNETAnalyzers>
-		<AnalysisLevel>latest</AnalysisLevel>
-		<Authors>Abdelfattah Radwan</Authors>
-		<Company>Winterbolt Games</Company>
-		<Nullable>enable</Nullable>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.0.0" />
-
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.0.0" />
-	</ItemGroup>
-
-	<Import Project="..\FishNet.CodeAnalysis.Extensions\FishNet.CodeAnalysis.Extensions.projitems" Label="Shared" />
-
-	<Import Project="..\FishNet.CodeAnalysis.Annotations\FishNet.CodeAnalysis.Annotations.projitems" Label="Shared" />
-	
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <AssemblyName>FishNet.CodeAnalysis.Analyzers</AssemblyName>
+        <RootNamespace>FishNet.CodeAnalysis.Analyzers</RootNamespace>
+        <DebugType>none</DebugType>
+        <LangVersion>13.0</LangVersion>
+        <EnableNETAnalyzers>True</EnableNETAnalyzers>
+        <AnalysisLevel>latest</AnalysisLevel>
+        <Authors>Abdelfattah Radwan</Authors>
+        <Company>Winterbolt Games</Company>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.0.0"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.0.0"/>
+    </ItemGroup>
+    <Import Project="..\FishNet.CodeAnalysis.Extensions\FishNet.CodeAnalysis.Extensions.projitems" Label="Shared"/>
+    <Import Project="..\FishNet.CodeAnalysis.Annotations\FishNet.CodeAnalysis.Annotations.projitems" Label="Shared"/>
 </Project>
