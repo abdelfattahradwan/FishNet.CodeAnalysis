@@ -49,7 +49,7 @@ internal sealed class DontDestroyOnLoadAnalyzer : DiagnosticAnalyzer
 
 		if (fullyQualifiedMethodName != FullyQualifiedDontDestroyOnLoadMethodName) return;
 
-		if (invocationExpressionSyntax.FirstAncestorOrSelf<BaseTypeDeclarationSyntax>()?.BaseList is not BaseListSyntax baseListSyntax) return;
+		if (invocationExpressionSyntax.FirstAncestorOrSelf<BaseTypeDeclarationSyntax>()?.BaseList is not { } baseListSyntax) return;
 
 		foreach (BaseTypeSyntax baseTypeSyntax in baseListSyntax.Types)
 		{

@@ -26,14 +26,14 @@ internal sealed class PreventUsageInsideAnalyzer : DiagnosticAnalyzer
 
 		context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
 
-		SyntaxKind[] syntaxKinds = new SyntaxKind[]
-		{
+		SyntaxKind[] syntaxKinds =
+		[
 			SyntaxKind.MethodDeclaration,
 			SyntaxKind.GetAccessorDeclaration,
 			SyntaxKind.SetAccessorDeclaration,
 			SyntaxKind.AddAccessorDeclaration,
 			SyntaxKind.RemoveAccessorDeclaration,
-		};
+		];
 
 		context.RegisterSyntaxNodeAction(Analyze, syntaxKinds);
 	}
@@ -46,15 +46,15 @@ internal sealed class PreventUsageInsideAnalyzer : DiagnosticAnalyzer
 		{
 			if (descendantSyntaxNode is not IdentifierNameSyntax) continue;
 
-			if (context.SemanticModel.GetSymbol(descendantSyntaxNode) is not ISymbol identifierNameSymbol) continue;
+			if (context.SemanticModel.GetSymbol(descendantSyntaxNode) is not { } identifierNameSymbol) continue;
 
 			foreach (AttributeData attribute in identifierNameSymbol.GetAttributes(typeof(PreventUsageInsideAttribute).GetFullyQualifiedName()))
 			{
-				if (attribute.GetConstructorArgument<string>(0) is not string typeName || string.IsNullOrWhiteSpace(typeName)) continue;
+				if (attribute.GetConstructorArgument<string>(0) is not { } typeName || string.IsNullOrWhiteSpace(typeName)) continue;
 
 				if (!syntaxNodeSymbol.ContainingType.IsSubtypeOf(typeName)) continue;
 
-				if (attribute.GetConstructorArgument<string>(1) is not string memberName || string.IsNullOrWhiteSpace(memberName) || memberName != syntaxNodeSymbol.Name) continue;
+				if (attribute.GetConstructorArgument<string>(1) is not { } memberName || string.IsNullOrWhiteSpace(memberName) || memberName != syntaxNodeSymbol.Name) continue;
 
 				context.ReportDiagnostic(Diagnostic.Create(Descriptor, descendantSyntaxNode.GetLocation(), identifierNameSymbol?.Name, syntaxNodeSymbol.Name, attribute.GetConstructorArgument<string>(2)));
 			}

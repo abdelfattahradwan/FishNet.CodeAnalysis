@@ -44,7 +44,7 @@ internal sealed class RemoteProcedureCallAnalyzer : DiagnosticAnalyzer
 
 		if (!overriddenMethodSymbol.HasAttribute(FullyQualifiedServerRpcAttributeName, FullyQualifiedObserversRpcAttributeName, FullyQualifiedTargetRpcAttributeName)) return;
 
-		if (methodDeclarationSyntax.Body is BlockSyntax bodyBlockSyntax)
+		if (methodDeclarationSyntax.Body is { } bodyBlockSyntax)
 		{
 			foreach (SyntaxNode syntaxNode in bodyBlockSyntax.DescendantNodes())
 			{
@@ -58,10 +58,10 @@ internal sealed class RemoteProcedureCallAnalyzer : DiagnosticAnalyzer
 
 				if (!invocationMethodSymbol.HasAttribute(FullyQualifiedServerRpcAttributeName, FullyQualifiedObserversRpcAttributeName, FullyQualifiedTargetRpcAttributeName)) continue;
 
-				context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpressionSyntax.GetLocation()));		
+				context.ReportDiagnostic(Diagnostic.Create(Descriptor, invocationExpressionSyntax.GetLocation()));
 			}
 		}
-		else if (methodDeclarationSyntax.ExpressionBody is ArrowExpressionClauseSyntax expressionBodyArrowExpressionClauseSyntax)
+		else if (methodDeclarationSyntax.ExpressionBody is { } expressionBodyArrowExpressionClauseSyntax)
 		{
 			foreach (SyntaxNode syntaxNode in expressionBodyArrowExpressionClauseSyntax.DescendantNodes())
 			{

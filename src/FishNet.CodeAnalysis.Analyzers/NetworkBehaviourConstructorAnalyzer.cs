@@ -32,7 +32,7 @@ internal sealed class NetworkBehaviourConstructorAnalyzer : DiagnosticAnalyzer
 
 	private static void Analyze(SyntaxNodeAnalysisContext context)
 	{
-		if (context.Node.FirstAncestorOrSelf<BaseTypeDeclarationSyntax>()?.BaseList is not BaseListSyntax baseListSyntax) return;
+		if (context.Node.FirstAncestorOrSelf<BaseTypeDeclarationSyntax>()?.BaseList is not { } baseListSyntax) return;
 
 		foreach (BaseTypeSyntax baseTypeSyntax in baseListSyntax.Types)
 		{
